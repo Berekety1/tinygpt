@@ -1,28 +1,19 @@
-from tokenizer import read_data, tokenize, encode,decode,make_data
-import random
+from tokenizerv2 import return_data
 import torch
-data = read_data()
-d,e = tokenize(sorted(set(data)))
+import random
+import config
 
-train_data = make_data(data,e)
-print(len(train_data))
+data = return_data()
 
-def batching(n,t,d:torch.Tensor):
+data = torch.tensor(data,dtype=torch.long,device=config.device)
+
+
+def batching(batch_size,sequence_length,data):
     x = []
     y = []
-    for i in range(n):
-        s = random.randint(0,len(d)-t-1)
-        
-        x.append(d[s:s+t])
-        y.append(d[s+1:s+t+1])
 
-    return torch.stack(x),torch.stack(y)
-
-def return_train_data():
-    return train_data
-
-def return_data():
-    return sorted(set(data))
-
-
-
+    for i in range(batch_size):
+        s = random.randint(0,len(data)-1-sequence_length)
+        x.append(data[s:s+sequence_length])
+        y.append(data[s+1:s+sequence_length+1])
+    return torch.stack(x), torch.stack(y)

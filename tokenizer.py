@@ -1,39 +1,34 @@
-import torch
+import os
 
-
-def read_data():
-    with open("data.txt", 'r') as f:
+def load_data():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"data.txt")
+    with open(path,'r') as f:
         data = f.read()
     return data
 
-def tokenize(data):
-    decode_dict = {}
-    encode_dict = {}
-    for i in range(len(data)):
-        encode_dict[data[i]] = i+1
-        decode_dict[i+1] = data[i]
+data = load_data()
+chars = sorted(set(data))
+stoi = {chars[i]:i for i in range(len(chars))}
+itos = {i:chars[i] for i in range(len(chars))}
 
-    decode_dict[0] = "UNK"
-    return decode_dict,encode_dict
 
-def encode(text,encode_dict):
-    m = []
-    for char in text:
-        if char in encode_dict:
-            m.append(encode_dict[char])
-        else:
-            m.append(0)
-    return m
-def decode(m,decode_dict):
-    l = []
-    for w in m:
-        if w in decode_dict:
-            l.append(decode_dict[w])
+def encode(data):
+    tokens = []
+    for char in data:
+        tokens.append(stoi[char])
+    return tokens
 
-    return "".join(l)
+def decode(data):
+    string = []
+    for num in data:
+        string.append(itos[num])
+    return "".join(string)
 
-def make_data(data,e):
-    return torch.tensor(encode(data,e), dtype=torch.long)
+def return_data():
+    return encode(data)
+    
+
+
 
 
 
